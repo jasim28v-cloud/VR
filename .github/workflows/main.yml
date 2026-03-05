@@ -1,0 +1,25 @@
+name: Update V2Ray Links
+on:
+  schedule:
+    - cron: '0 * * * *' # سيعمل البوت تلقائياً كل ساعة
+  workflow_dispatch: # زر لتشغيله يدوياً متى شئت
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run Scraper
+        run: python scraper.py
+      - name: Commit and Push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html
+          git commit -m "تحديث تلقائي للسيرفرات" || exit 0
+          git push

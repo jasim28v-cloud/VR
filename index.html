@@ -1,49 +1,35 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Servers - VR</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        h1 { color: #38bdf8; margin-bottom: 30px; text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
-        .container { width: 100%; max-width: 600px; }
-        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .link-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70%; font-size: 14px; color: #94a3b8; direction: ltr; text-align: left; }
-        button { background: #38bdf8; color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; transition: 0.2s; }
-        button:hover { background: #0ea5e9; }
-        button:active { transform: scale(0.95); }
-        .footer { margin-top: auto; padding: 20px; font-size: 12px; color: #64748b; text-align: center; }
-        .no-links { text-align: center; padding: 40px; color: #94a3b8; background: #1e293b; border-radius: 12px; }
-    </style>
-</head>
-<body>
-    <h1>V2Ray Servers 🚀</h1>
-    <div class="container" id="links-container">
-        <div class="no-links">جاري تحميل السيرفرات من القناة...</div>
-    </div>
-    <div class="footer">تحديث تلقائي كل ساعة عبر GitHub Actions</div>
 
-    <script>
-        // دالة النسخ
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('تم نسخ السيرفر بنجاح! ✅');
-            }).catch(err => {
-                const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                alert('تم نسخ السيرفر! ✅');
-            });
-        }
-
-        // ملاحظة: هذا الملف يتم تحديث محتواه برمجياً بواسطة scraper.py
-        // إذا كنت تراه الآن فهذا يعني أن البنية التحتية للموقع جاهزة
-    </script>
-</body>
-</html>
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>V2Ray Servers - VR</title>
+        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+            h1 { color: #38bdf8; margin-bottom: 30px; }
+            .container { width: 100%; max-width: 600px; }
+            .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+            .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+            .link-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70%; font-size: 14px; color: #94a3b8; }
+            button { background: #38bdf8; color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
+            button:active { transform: scale(0.95); }
+            .footer { margin-top: 40px; font-size: 12px; color: #64748b; }
+        </style>
+    </head>
+    <body>
+        <h1>V2Ray Servers 🚀</h1>
+        <div class="container">
+    <p style='text-align:center;'>لا توجد روابط متاحة حالياً.. تأكد من القناة</p>
+        </div>
+        <div class="footer">تحديث تلقائي كل ساعة</div>
+        <script>
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text);
+                alert('تم نسخ السيرفر بنجاح!');
+            }
+        </script>
+    </body>
+    </html>
+    

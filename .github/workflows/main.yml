@@ -1,25 +1,34 @@
-name: Update V2Ray
+name: Auto Update VR
+
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *' # يعمل كل رأس ساعة
+  workflow_dispatch: # يسمح لك بتشغيله يدوياً
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
-      - setup-python:
-          python-version: '3.9'
-      - name: Install
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: pip install requests
-      - name: Run
+
+      - name: Run Scraper
         run: python scraper.py
-      - name: Save
+
+      - name: Commit and Push changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add index.html
-          git commit -m "Update" || exit 0
+          git commit -m "Update servers: $(date)" || echo "No changes to commit"
           git push

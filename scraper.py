@@ -7,6 +7,7 @@ def run():
     
     try:
         response = requests.get(url, headers=headers, timeout=15)
+        # البحث عن روابط vless, vmess, trojan, ss
         links = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
         
         clean_links = []
@@ -20,15 +21,15 @@ def run():
             proto = link.split('://')[0].upper()
             cards_html += f'''
             <div class="card">
-                <div class="card-top">
+                <div class="card-header">
                     <span class="badge">{proto}</span>
-                    <div class="actions">
-                        <button class="btn copy" onclick="copy('{link}')">نسخ</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-{i}')">QR</button>
+                    <div class="btns">
+                        <button class="btn copy-btn" onclick="copyText('{link}')">نسخ الرابط</button>
+                        <button class="btn qr-btn" onclick="toggleQR('qr-{i}', '{link}')">إظهار الباركود 🔳</button>
                     </div>
                 </div>
-                <div class="link-box">{link}</div>
-                <div id="qr-{i}" class="qr-container" data-link="{link}"></div>
+                <div class="link-display">{link[:50]}...</div>
+                <div id="qr-{i}" class="qr-box"></div>
             </div>'''
         
         full_html = f'''<!DOCTYPE html>
@@ -40,37 +41,36 @@ def run():
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {{ --p: #00f2fe; --bg: #0a0f1d; --card: #161e2d; }}
+        :root {{ --p: #00f2fe; --bg: #0f172a; --card: #1e293b; }}
         body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
-        h1 {{ background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+        h1 {{ text-align: center; color: var(--p); text-shadow: 0 0 10px rgba(0,242,254,0.3); }}
         .container {{ width: 100%; max-width: 500px; }}
-        .card {{ background: var(--card); border: 1px solid #2d3748; border-radius: 15px; padding: 15px; margin-bottom: 15px; }}
-        .card-top {{ display: flex; justify-content: space-between; align-items: center; }}
-        .badge {{ background: var(--p); color: black; padding: 3px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; }}
-        .btn {{ border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Tajawal'; transition: 0.2s; }}
-        .copy {{ background: white; color: black; }}
-        .qr-btn {{ background: #4facfe; color: white; margin-right: 5px; }}
-        .link-box {{ background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 10px; color: #718096; margin-top: 10px; word-break: break-all; direction: ltr; }}
-        .qr-container {{ display: none; background: white; padding: 10px; margin-top: 10px; border-radius: 10px; text-align: center; }}
-        .qr-container img {{ margin: 0 auto; }}
-        .qr-container.active {{ display: block; animation: fadeIn 0.3s; }}
-        @keyframes fadeIn {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
+        .card {{ background: var(--card); border: 1px solid #334155; border-radius: 16px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }}
+        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+        .badge {{ background: var(--p); color: #0f172a; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }}
+        .btn {{ border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.3s; }}
+        .copy-btn {{ background: #f8fafc; color: #0f172a; }}
+        .qr-btn {{ background: #38bdf8; color: white; margin-right: 5px; }}
+        .link-display {{ background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; font-size: 11px; color: #94a3b8; direction: ltr; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+        .qr-box {{ display: none; background: white; padding: 15px; margin-top: 15px; border-radius: 12px; text-align: center; animation: slideDown 0.3s ease; }}
+        .qr-box img {{ margin: 0 auto; display: block; }}
+        .qr-box.active {{ display: block; }}
+        @keyframes slideDown {{ from {{ opacity: 0; transform: translateY(-10px); }} to {{ opacity: 1; transform: translateY(0); }} }}
     </style>
 </head>
 <body>
-    <h1>V2Ray QR Hub 🚀</h1>
-    <div class="container">{cards_html if clean_links else '<p>جاري تحديث السيرفرات...</p>'}</div>
+    <h1>V2Ray QR Generator 🚀</h1>
+    <div class="container">{cards_html if clean_links else '<p style="text-align:center">جاري سحب السيرفرات وتجهيز الباركود...</p>'}</div>
     <script>
-        function copy(t) {{
-            navigator.clipboard.writeText(t).then(() => alert("تم نسخ الرابط ✅"));
+        function copyText(t) {{
+            navigator.clipboard.writeText(t).then(() => alert("تم النسخ بنجاح ✅"));
         }}
-        function toggleQR(id) {{
-            const el = document.getElementById(id);
-            const link = el.getAttribute('data-link');
-            if (!el.innerHTML) {{
-                new QRCode(el, {{ text: link, width: 150, height: 150, colorDark: "#000000", colorLight: "#ffffff" }});
+        function toggleQR(id, link) {{
+            const box = document.getElementById(id);
+            if (!box.innerHTML) {{
+                new QRCode(box, {{ text: link, width: 180, height: 180, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H }});
             }}
-            el.classList.toggle('active');
+            box.classList.toggle('active');
         }}
     </script>
 </body>

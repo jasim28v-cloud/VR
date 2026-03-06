@@ -3,257 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Elite Hub | 7 سيرفر</title>
+    <title>V2Ray Elite Hub</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00f2fe;
-            --secondary: #4facfe;
-            --bg: #030712;
-            --card-bg: rgba(31, 41, 55, 0.7);
-            --accent: #10b981;
-        }
+        :root { --main: #00f2fe; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
+        body { background: var(--bg); color: var(--text); font-family: 'Tajawal', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .hero { text-align: center; margin-bottom: 30px; }
+        .hero h1 { color: var(--main); margin: 0; font-size: 28px; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
+        .status-bar { font-size: 12px; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; margin-top: 10px; border: 1px solid #334155; }
+        
+        .container { width: 100%; max-width: 500px; }
+        
+        /* تصميم البطاقات الاحترافي */
+        .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 20px; border: 1px solid #334155; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: 0.3s; }
+        .card:hover { border-color: var(--main); transform: translateY(-3px); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .proto-badge { background: linear-gradient(135deg, var(--main), #4facfe); color: #0f172a; padding: 4px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; }
+        
+        .copy-btn { background: #f1f5f9; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 12px; transition: 0.2s; }
+        .copy-btn:hover { background: var(--main); }
+        
+        .link-area { font-size: 11px; color: #94a3b8; word-break: break-all; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; direction: ltr; margin-bottom: 12px; border: 1px inset #1e293b; }
+        
+        .qr-toggle-btn { width: 100%; padding: 10px; background: #38bdf8; border: none; color: white; border-radius: 10px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.2s; }
+        .qr-toggle-btn:hover { background: #0ea5e9; }
+        
+        .qr-display { display: none; background: white; padding: 15px; margin-top: 15px; border-radius: 12px; text-align: center; animation: fadeIn 0.3s ease; }
+        .qr-display img { margin: 0 auto; }
 
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: radial-gradient(circle at top, #1e293b, var(--bg));
-            color: #f3f4f6;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
+        /* قسم التعليمات */
+        .instructions { background: #161e2d; border-radius: 16px; padding: 20px; width: 100%; max-width: 500px; border-right: 5px solid var(--main); margin-top: 10px; }
+        .instructions h3 { color: var(--main); margin-top: 0; font-size: 18px; }
+        .instructions p { font-size: 14px; color: #cbd5e1; line-height: 1.6; margin: 8px 0; }
 
-        .header {
-            text-align: center;
-            padding: 40px 0;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-        }
-
-        .stats-badge {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--primary);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            display: inline-block;
-            margin-top: 15px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .proto-tag {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #030712;
-            padding: 5px 15px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-
-        .action-group { display: flex; gap: 10px; }
-
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .icon-btn:hover { background: var(--primary); color: #000; transform: rotate(5deg); }
-
-        .link-preview {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #9ca3af;
-            word-break: break-all;
-            direction: ltr;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .qr-wrapper {
-            display: none;
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 15px;
-            text-align: center;
-            animation: zoomIn 0.3s ease;
-        }
-
-        .qr-wrapper img { margin: 0 auto; }
-
-        .qr-wrapper.active { display: block; }
-
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .footer { text-align: center; color: #4b5563; font-size: 0.8rem; margin-top: 40px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>V2Ray Elite Hub</h1>
-        <div class="stats-badge">
-            🚀 7 سيرفر متاح | 🕒 2026-03-06 | 09:29 PM
-        </div>
+    <div class="hero">
+        <h1>🚀 V2Ray Elite Hub</h1>
+        <div class="status-bar">تحديث: 2026-03-06 | 09:38 PM | السيرفرات: 7</div>
     </div>
 
     <div class="container">
         
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VMESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-0', 'vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VMESS</span>
+                    <button class="copy-btn" onclick="copy('vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9</div>
-                <div id="qr-0" class="qr-wrapper"></div>
+                <div class="link-area">vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9</div>
+                <button class="qr-toggle-btn" onclick="qr('q0','vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">إظهار الباركود 🔳</button>
+                <div id="q0" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VMESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-1', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VMESS</span>
+                    <button class="copy-btn" onclick="copy('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
-                <div id="qr-1" class="qr-wrapper"></div>
+                <div class="link-area">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <button class="qr-toggle-btn" onclick="qr('q1','vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">إظهار الباركود 🔳</button>
+                <div id="q1" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VMESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-2', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VMESS</span>
+                    <button class="copy-btn" onclick="copy('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
-                <div id="qr-2" class="qr-wrapper"></div>
+                <div class="link-area">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <button class="qr-toggle-btn" onclick="qr('q2','vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">إظهار الباركود 🔳</button>
+                <div id="q2" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VMESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-3', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VMESS</span>
+                    <button class="copy-btn" onclick="copy('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
-                <div id="qr-3" class="qr-wrapper"></div>
+                <div class="link-area">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <button class="qr-toggle-btn" onclick="qr('q3','vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">إظهار الباركود 🔳</button>
+                <div id="q3" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VMESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-4', 'vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VMESS</span>
+                    <button class="copy-btn" onclick="copy('vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==</div>
-                <div id="qr-4" class="qr-wrapper"></div>
+                <div class="link-area">vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==</div>
+                <button class="qr-toggle-btn" onclick="qr('q4','vmess://eyJ2IjoiMiIsInBzIjoidm1lc3Mtd3MtdGxzIiwiYWRkIjoibmwtZnJlZXZtZXNzLnByaXZhdGVpcC5uZXQiLCJwb3J0IjoiNDQzIiwiaWQiOiJiMTdjNGI1NC0xYmYyLTRiYTMtYjNmMS04NWU4YTNiYjBkMjQiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiL25ld3MiLCJ0bHMiOiJ0bHMifQ==')">إظهار الباركود 🔳</button>
+                <div id="q4" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VLESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-5', 'vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VLESS</span>
+                    <button class="copy-btn" onclick="copy('vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls</div>
-                <div id="qr-5" class="qr-wrapper"></div>
+                <div class="link-area">vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls</div>
+                <button class="qr-toggle-btn" onclick="qr('q5','vless://2ea85c97-8d44-49ec-b9c2-064a4b28d7f3@us-freevmess.privateip.net:443?type=tcp&encryption=none&security=tls&path=%2f&flow=xtls-rprx-vision#vless-tcp-xtls')">إظهار الباركود 🔳</button>
+                <div id="q5" class="qr-display"></div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">VLESS</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-6', 'vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls')" title="عرض الباركود">🔳</button>
-                    </div>
+                    <span class="proto-badge">VLESS</span>
+                    <button class="copy-btn" onclick="copy('vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls')">نسخ الرابط 📋</button>
                 </div>
-                <div class="link-preview">vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls</div>
-                <div id="qr-6" class="qr-wrapper"></div>
+                <div class="link-area">vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls</div>
+                <button class="qr-toggle-btn" onclick="qr('q6','vless://037fed53-6006-4c26-9416-615a02b63c72@it-freevmess.privateip.net:443?type=ws&encryption=none&security=tls&path=%2fVLESS#vless-ws-tls')">إظهار الباركود 🔳</button>
+                <div id="q6" class="qr-display"></div>
             </div>
     </div>
 
-    <div class="footer">
-        جيميني المساعد الذكي | 2026
+    <div class="instructions">
+        <h3>📖 دليل الاستخدام السريع:</h3>
+        <p>1. <b>طريقة النسخ:</b> اضغط زر "نسخ" ثم اذهب لتطبيق v2rayNG واختر "Import config from Clipboard".</p>
+        <p>2. <b>طريقة الباركود:</b> اضغط "إظهار الباركود" وامسح الرمز ضوئياً من داخل تطبيق الـ VPN الخاص بك.</p>
+        <p>3. <b>التحديث:</b> الموقع يحدّث بياناته دورياً لضمان عمل كافة السيرفرات.</p>
     </div>
+
+    <footer style="margin: 40px 0; color: #475569; font-size: 11px;">صُنع بواسطة المساعد الذكي جيميني | 2026</footer>
 
     <script>
-        function copyText(t) {
+        function copy(t) { 
             navigator.clipboard.writeText(t).then(() => {
-                alert("تم نسخ السيرفر إلى الحافظة ✅");
+                alert("تم نسخ السيرفر بنجاح! ✅");
             });
         }
-        function toggleQR(id, link) {
-            const box = document.getElementById(id);
-            if (!box.innerHTML) {
-                new QRCode(box, {
-                    text: link,
-                    width: 200,
-                    height: 200,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-            }
-            box.classList.toggle('active');
+        function qr(id, l) {
+            var el = document.getElementById(id);
+            if(!el.innerHTML) new QRCode(el, {text:l, width:180, height:180, colorDark : "#000000", colorLight : "#ffffff"});
+            el.style.display = (el.style.display == 'block') ? 'none' : 'block';
         }
     </script>
 </body>

@@ -26,7 +26,18 @@
 </head>
 <body>
     <h1>V2Ray QR Generator 🚀</h1>
-    <div class="container"><p style="text-align:center">جاري سحب السيرفرات وتجهيز الباركود...</p></div>
+    <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge">VMESS</span>
+                    <div class="btns">
+                        <button class="btn copy-btn" onclick="copyText('vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">نسخ الرابط</button>
+                        <button class="btn qr-btn" onclick="toggleQR('qr-0', 'vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">إظهار الباركود 🔳</button>
+                    </div>
+                </div>
+                <div class="link-display">vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZW...</div>
+                <div id="qr-0" class="qr-box"></div>
+            </div></div>
     <script>
         function copyText(t) {
             navigator.clipboard.writeText(t).then(() => alert("تم النسخ بنجاح ✅"));

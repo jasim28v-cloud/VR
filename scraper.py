@@ -9,8 +9,11 @@ def run():
     try:
         response = requests.get(url, headers=headers, timeout=15)
         response.encoding = 'utf-8'
+        
+        # البحث عن كافة البروتوكولات المتاحة
         links = re.findall(r'(?:vless|vmess|trojan|ss|ssr)://[^\s<"\'\s]+', response.text)
         
+        # تنظيف الروابط ومنع التكرار
         clean_links = []
         for l in links:
             clean = l.replace('&amp;', '&').split('<')[0].split('"')[0].strip()
@@ -26,14 +29,14 @@ def run():
             cards_html += f'''
             <div class="card">
                 <div class="card-header">
-                    <span class="badge">{proto}</span>
-                    <div class="btns">
-                        <button class="btn copy-btn" onclick="copyText('{link}')">نسخ 📋</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-{i}', '{link}')">باركود 🔳</button>
+                    <div class="proto-tag">{proto}</div>
+                    <div class="action-group">
+                        <button class="icon-btn copy" onclick="copyText('{link}')" title="نسخ الرابط">📋</button>
+                        <button class="icon-btn qr" onclick="toggleQR('qr-{i}', '{link}')" title="عرض الباركود">🔳</button>
                     </div>
                 </div>
-                <div class="link-display">{link}</div>
-                <div id="qr-{i}" class="qr-box"></div>
+                <div class="link-preview">{link}</div>
+                <div id="qr-{i}" class="qr-wrapper"></div>
             </div>'''
         
         full_html = f'''<!DOCTYPE html>
@@ -41,63 +44,178 @@ def run():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Elite Hub</title>
+    <title>V2Ray Elite Hub | {count} سيرفر</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {{ --p: #00f2fe; --s: #4facfe; --bg: #0a0f1d; --card: #161e2d; }}
-        body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
-        .header {{ text-align: center; margin-bottom: 30px; }}
-        h1 {{ color: var(--p); text-shadow: 0 0 15px rgba(0,242,254,0.4); margin-bottom: 5px; }}
-        .update-info {{ font-size: 12px; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; border: 1px solid #1e293b; }}
-        .container {{ width: 100%; max-width: 550px; }}
-        .card {{ background: var(--card); border: 1px solid #2d3748; border-radius: 20px; padding: 20px; margin-bottom: 20px; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }}
-        .card:hover {{ border-color: var(--p); transform: translateY(-5px); }}
-        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }}
-        .badge {{ background: linear-gradient(135deg, var(--p), var(--s)); color: #0a0f1d; padding: 5px 15px; border-radius: 10px; font-weight: bold; font-size: 13px; }}
-        .btn {{ border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.2s; }}
-        .copy-btn {{ background: #f8fafc; color: #0f172a; }}
-        .qr-btn {{ background: #38bdf8; color: white; margin-right: 8px; }}
-        .link-display {{ background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; font-size: 11px; color: #64748b; margin-top: 10px; word-break: break-all; direction: ltr; border: 1px inset #1e293b; }}
-        .qr-box {{ display: none; background: white; padding: 20px; margin-top: 15px; border-radius: 15px; text-align: center; animation: slideIn 0.3s ease; }}
-        .qr-box img {{ margin: 0 auto; }}
-        .qr-box.active {{ display: block; }}
-        
-        /* قسم التعليمات */
-        .how-to {{ background: #1e293b; border-radius: 20px; padding: 20px; width: 100%; max-width: 550px; margin-top: 30px; border-right: 5px solid var(--p); }}
-        .how-to h3 {{ margin-top: 0; color: var(--p); }}
-        .step {{ margin-bottom: 10px; font-size: 14px; line-height: 1.6; color: #cbd5e1; }}
-        
-        @keyframes slideIn {{ from {{ opacity: 0; transform: translateY(-10px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+        :root {{
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #030712;
+            --card-bg: rgba(31, 41, 55, 0.7);
+            --accent: #10b981;
+        }}
+
+        body {{
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at top, #1e293b, var(--bg));
+            color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }}
+
+        .header {{
+            text-align: center;
+            padding: 40px 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }}
+
+        h1 {{
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }}
+
+        .stats-badge {{
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            display: inline-block;
+            margin-top: 15px;
+        }}
+
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }}
+
+        .card {{
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }}
+
+        .card:hover {{
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }}
+
+        .card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }}
+
+        .proto-tag {{
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #030712;
+            padding: 5px 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }}
+
+        .action-group {{ display: flex; gap: 10px; }}
+
+        .icon-btn {{
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }}
+
+        .icon-btn:hover {{ background: var(--primary); color: #000; transform: rotate(5deg); }}
+
+        .link-preview {{
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            word-break: break-all;
+            direction: ltr;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }}
+
+        .qr-wrapper {{
+            display: none;
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            text-align: center;
+            animation: zoomIn 0.3s ease;
+        }}
+
+        .qr-wrapper img {{ margin: 0 auto; }}
+
+        .qr-wrapper.active {{ display: block; }}
+
+        @keyframes zoomIn {{
+            from {{ opacity: 0; transform: scale(0.9); }}
+            to {{ opacity: 1; transform: scale(1); }}
+        }}
+
+        .footer {{ text-align: center; color: #4b5563; font-size: 0.8rem; margin-top: 40px; }}
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>V2Ray Elite Hub 🚀</h1>
-        <div class="update-info">📊 {count} سيرفر | 🕒 تحديث: {now}</div>
+        <h1>V2Ray Elite Hub</h1>
+        <div class="stats-badge">
+            🚀 {count} سيرفر متاح | 🕒 {now}
+        </div>
     </div>
 
     <div class="container">
-        {cards_html if clean_links else '<p style="text-align:center">جاري سحب السيرفرات من القناة...</p>'}
+        {cards_html if clean_links else '<div class="card" style="text-align:center">جاري تحديث السيرفرات...</div>'}
     </div>
 
-    <div class="how-to">
-        <h3>💡 كيف تستخدم السيرفرات؟</h3>
-        <div class="step">1️⃣ <b>للنسخ:</b> اضغط على زر "نسخ" ثم اذهب لتطبيق v2rayNG واختر "Import from Clipboard".</div>
-        <div class="step">2️⃣ <b>للباركود:</b> اضغط "باركود" وامسح الصورة من هاتف آخر أو عبر الكاميرا داخل التطبيق.</div>
-        <div class="step">3️⃣ <b>التحديث:</b> الموقع يحدّث نفسه تلقائياً لجلب أحدث السيرفرات العاملة.</div>
+    <div class="footer">
+        جيميني المساعد الذكي | 2026
     </div>
-
-    <p style="margin-top:40px; color:#475569; font-size:12px;">تطوير المساعد الذكي جيميني © 2026</p>
 
     <script>
         function copyText(t) {{
-            navigator.clipboard.writeText(t).then(() => alert("تم نسخ السيرفر بنجاح ✅"));
+            navigator.clipboard.writeText(t).then(() => {{
+                alert("تم نسخ السيرفر إلى الحافظة ✅");
+            }});
         }}
         function toggleQR(id, link) {{
             const box = document.getElementById(id);
             if (!box.innerHTML) {{
-                new QRCode(box, {{ text: link, width: 180, height: 180 }});
+                new QRCode(box, {{
+                    text: link,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                }});
             }}
             box.classList.toggle('active');
         }}

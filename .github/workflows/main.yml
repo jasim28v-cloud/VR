@@ -1,34 +1,20 @@
-name: Auto Update VR
-
+name: Auto Update
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل كل رأس ساعة
-  workflow_dispatch: # يسمح لك بتشغيله يدوياً
-
+    - cron: '0 * * * *'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install requests
-
-      - name: Run Scraper
-        run: python scraper.py
-
-      - name: Commit and Push changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+      - uses: actions/checkout@v4
+      - run: pip install requests
+      - run: python scraper.py
+      - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "UpdateBot"
           git add index.html
-          git commit -m "Update servers: $(date)" || echo "No changes to commit"
+          git commit -m "Update links" || exit 0
           git push

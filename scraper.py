@@ -1,61 +1,60 @@
 import requests
 import re
 
-# رابط القناة بنسخة الويب لضمان القراءة
-url = "https://t.me/s/g33sd"
-
-def get_configs():
+def get_links():
+    url = "https://t.me/s/g33sd"
     headers = {'User-Agent': 'Mozilla/5.0'}
     try:
         response = requests.get(url, headers=headers, timeout=15)
-        # البحث عن كافة أنواع الروابط: vless, vmess, trojan, ss
-        found = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
-        # تنظيف الروابط من رموز HTML وتكرار
-        unique_links = list(set([l.replace('&amp;', '&') for l in found]))
-        return unique_links
+        links = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
+        return list(set([l.replace('&amp;', '&').split('<')[0] for l in links]))
     except:
         return []
 
-def build_page(links):
+def create_index(links):
     cards = ""
-    for link in links:
-        proto = link.split("://")[0].upper()
+    for l in links:
+        p = l.split('://')[0].upper()
         cards += f'''
         <div class="card">
-            <div class="info">
-                <span class="badge">{proto}</span>
-                <div class="url">{link}</div>
+            <div class="card-header">
+                <span class="badge">{p}</span>
+                <button class="copy-btn" onclick="cp('{l}')">نسخ</button>
             </div>
-            <button onclick="copy('{link}')">نسخ</button>
+            <div class="link-box">{l}</div>
         </div>'''
 
-    content = f"""
-    <!DOCTYPE html>
-    <html lang="ar" dir="rtl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>V2Ray Servers</title>
-        <style>
-            body {{ font-family: sans-serif; background: #0f172a; color: white; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
-            .container {{ width: 100%; max-width: 600px; }}
-            .card {{ background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }}
-            .info {{ overflow: hidden; margin-left: 10px; flex-grow: 1; }}
-            .badge {{ background: #38bdf8; color: #0f172a; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }}
-            .url {{ font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 5px; direction: ltr; text-align: left; }}
-            button {{ background: #38bdf8; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }}
-        </style>
-    </head>
-    <body>
-        <h2>🚀 سيرفرات القناة</h2>
-        <div class="container">{"<p style='text-align:center;'>لا توجد روابط حالياً</p>" if not links else cards}</div>
-        <script>function copy(t){{navigator.clipboard.writeText(t);alert("تم النسخ ✅");}}</script>
-    </body>
-    </html>"""
-    
+    html = f'''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2Ray Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{ --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; }}
+        body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
+        h1 {{ color: var(--primary); font-size: 24px; margin-bottom: 20px; }}
+        .container {{ width: 100%; max-width: 500px; }}
+        .card {{ background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px #000; }}
+        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+        .badge {{ background: var(--primary); color: var(--bg); padding: 3px 10px; border-radius: 7px; font-weight: bold; font-size: 12px; }}
+        .copy-btn {{ background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; }}
+        .copy-btn:active {{ background: var(--primary); color: var(--bg); }}
+        .link-box {{ background: #0f172a; padding: 10px; border-radius: 8px; font-size: 11px; color: #94a3b8; word-break: break-all; direction: ltr; border: 1px solid #1e293b; max-height: 60px; overflow-y: auto; }}
+        .empty {{ text-align: center; padding: 40px; color: #64748b; }}
+    </style>
+</head>
+<body>
+    <h1>🚀 سيرفرات V2Ray احترافية</h1>
+    <div class="container">
+        {cards if links else '<div class="empty">جاري التحديث... أعد تحميل الصفحة</div>'}
+    </div>
+    <script>function cp(t){{navigator.clipboard.writeText(t);alert("تم النسخ ✅");}}</script>
+</body>
+</html>'''
     with open("index.html", "w", encoding="utf-8") as f:
-        f.write(content)
+        f.write(html)
 
 if __name__ == "__main__":
-    configs = get_configs()
-    build_page(configs)
+    create_index(get_links())

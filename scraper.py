@@ -1,6 +1,5 @@
 import requests
 import re
-from datetime import datetime
 
 def run():
     url = "https://t.me/s/kg33d"
@@ -15,9 +14,6 @@ def run():
             clean = l.replace('&amp;', '&').split('<')[0].split('"')[0].strip()
             if clean not in clean_links:
                 clean_links.append(clean)
-        
-        # إضافة وقت التحديث
-        now = datetime.now().strftime("%I:%M %p - %Y/%m/%d")
         
         cards_html = ""
         for i, link in enumerate(clean_links):
@@ -44,50 +40,28 @@ def run():
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {{ --p: #00f2fe; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; }}
+        :root {{ --p: #00f2fe; --bg: #0f172a; --card: #1e293b; }}
         body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
-        h1 {{ text-align: center; color: var(--p); margin-bottom: 5px; }}
-        .update-tag {{ font-size: 11px; color: #94a3b8; margin-bottom: 20px; }}
+        h1 {{ text-align: center; color: var(--p); }}
         .container {{ width: 100%; max-width: 500px; }}
-        .card {{ background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }}
-        .card:hover {{ border-color: var(--p); transform: translateY(-2px); }}
+        .card {{ background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 15px; margin-bottom: 15px; }}
         .card-header {{ display: flex; justify-content: space-between; align-items: center; }}
         .badge {{ background: var(--p); color: #0f172a; padding: 2px 10px; border-radius: 5px; font-weight: bold; }}
-        .btn {{ border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.2s; }}
-        .copy-btn {{ background: white; color: #0f172a; }}
-        .copy-btn:active {{ background: #cbd5e1; }}
-        .qr-btn {{ background: var(--accent); color: white; margin-right: 5px; }}
+        .btn {{ border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; }}
+        .copy-btn {{ background: white; }}
+        .qr-btn {{ background: #38bdf8; color: white; margin-right: 5px; }}
         .link-display {{ background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px; font-size: 10px; color: #94a3b8; margin-top: 10px; word-break: break-all; direction: ltr; }}
-        .qr-box {{ display: none; background: white; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: center; animation: fadeIn 0.3s ease; }}
+        .qr-box {{ display: none; background: white; padding: 10px; margin-top: 10px; border-radius: 8px; text-align: center; }}
         .qr-box img {{ margin: 0 auto; }}
         .qr-box.active {{ display: block; }}
-        
-        /* قسم التعليمات */
-        .info-section {{ width: 100%; max-width: 500px; background: #161e2d; border-radius: 12px; padding: 15px; margin-top: 10px; border-right: 4px solid var(--p); }}
-        .info-section h3 {{ color: var(--p); margin-top: 0; font-size: 16px; }}
-        .info-section p {{ font-size: 13px; color: #cbd5e1; line-height: 1.6; margin: 5px 0; }}
-        
-        @keyframes fadeIn {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
     </style>
 </head>
 <body>
     <h1>موالد الباركود 🚀</h1>
-    <div class="update-tag">آخر تحديث: {now}</div>
-
-    <div class="container">
-        {cards_html if clean_links else '<p>جاري جلب السيرفرات من kg33d...</p>'}
-    </div>
-
-    <div class="info-section">
-        <h3>📖 تعليمات الاستخدام:</h3>
-        <p>• <b>للنسخ:</b> اضغط "نسخ" ثم استورد السيرفر في تطبيق v2rayNG.</p>
-        <p>• <b>للباركود:</b> اضغط "باركود" وامسح الرمز ضوئياً عبر الكاميرا.</p>
-        <p>• <b>ملاحظة:</b> الموقع يحدّث السيرفرات تلقائياً من القناة.</p>
-    </div>
-
+    <div class="container">{cards_html if clean_links else '<p>جاري جلب السيرفرات من kg33d...</p>'}</div>
     <script>
         function copyText(t) {{
-            navigator.clipboard.writeText(t).then(() => alert("تم النسخ بنجاح ✅"));
+            navigator.clipboard.writeText(t).then(() => alert("تم النسخ ✅"));
         }}
         function toggleQR(id, link) {{
             const box = document.getElementById(id);

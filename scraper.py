@@ -3,22 +3,31 @@ import re
 from datetime import datetime
 
 def run():
+    # الرابط الحقيقي لقناتك
     url = "https://t.me/s/kg33d"
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/110.0.0.0 Safari/537.36'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+    }
     
     try:
         response = requests.get(url, headers=headers, timeout=15)
-        links = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
+        response.encoding = 'utf-8'
         
+        # استخراج الروابط باستخدام نمط بحث متطور
+        raw_links = re.findall(r'(?:vless|vmess|trojan|ss|ssr)://[^\s<"\'\s]+', response.text)
+        
+        # تنظيف الروابط ومنع التكرار
         clean_links = []
-        for l in links:
-            clean = l.replace('&amp;', '&').split('<')[0].split('"')[0].strip()
-            if clean not in clean_links:
-                clean_links.append(clean)
+        for link in raw_links:
+            formatted = link.replace('&amp;', '&').split('<')[0].split('"')[0].strip()
+            if formatted not in clean_links:
+                clean_links.append(formatted)
         
-        now = datetime.now().strftime("%Y-%m-%d %H:%M")
-        count = len(clean_links)
+        # إعداد بيانات الصفحة
+        update_time = datetime.now().strftime("%Y-%m-%d %I:%M %p")
+        server_count = len(clean_links)
         
+        # بناء بطاقات السيرفرات
         cards_html = ""
         for i, link in enumerate(clean_links):
             proto = link.split('://')[0].upper()
@@ -26,72 +35,84 @@ def run():
             <div class="card">
                 <div class="card-header">
                     <span class="badge">{proto}</span>
-                    <div class="btns">
-                        <button class="btn copy-btn" onclick="copyText('{link}')">نسخ الرابط</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-{i}', '{link}')">باركود 🔳</button>
+                    <div class="action-btns">
+                        <button class="btn copy-btn" onclick="copyToClipboard('{link}')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQRCode('qr-{i}', '{link}')">باركود</button>
                     </div>
                 </div>
-                <div class="link-display">{link}</div>
-                <div id="qr-{i}" class="qr-box"></div>
+                <div class="link-text">{link}</div>
+                <div id="qr-{i}" class="qr-container"></div>
             </div>'''
-        
+
+        # الكود الكامل لصفحة HTML
         full_html = f'''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Hub - {count} سيرفر متاح</title>
+    <title>V2Ray Elite | {server_count} سيرفر متاح</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {{ --p: #00f2fe; --bg: #0a0f1d; --card: #161e2d; --text: #f8fafc; }}
+        :root {{ --main: #00f2fe; --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9; }}
         body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
-        .header {{ text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1e293b; padding-bottom: 20px; width: 100%; max-width: 500px; }}
-        .stats {{ font-size: 14px; color: #94a3b8; margin-top: 10px; }}
-        .container {{ width: 100%; max-width: 500px; }}
-        .card {{ background: var(--card); border: 1px solid #2d3748; border-radius: 16px; padding: 18px; margin-bottom: 20px; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }}
-        .card:hover {{ border-color: var(--p); transform: translateY(-3px); }}
+        .top-bar {{ width: 100%; max-width: 600px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #334155; padding-bottom: 15px; }}
+        h1 {{ color: var(--main); margin: 0; font-size: 24px; }}
+        .status {{ font-size: 13px; color: #94a3b8; margin-top: 8px; }}
+        .container {{ width: 100%; max-width: 600px; }}
+        .card {{ background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; transition: 0.3s; }}
+        .card:hover {{ transform: translateY(-3px); border-color: var(--main); }}
         .card-header {{ display: flex; justify-content: space-between; align-items: center; }}
-        .badge {{ background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #0a0f1d; padding: 4px 14px; border-radius: 10px; font-weight: bold; font-size: 13px; }}
-        .btn {{ border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.2s; }}
-        .copy-btn {{ background: #f8fafc; color: #0f172a; }}
-        .qr-btn {{ background: #38bdf8; color: white; margin-right: 8px; }}
-        .link-display {{ background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; font-size: 11px; color: #64748b; margin-top: 15px; word-break: break-all; direction: ltr; border: 1px inset #1e293b; }}
-        .qr-box {{ display: none; background: white; padding: 20px; margin-top: 15px; border-radius: 15px; text-align: center; animation: fadeIn 0.4s ease; }}
-        .qr-box img {{ margin: 0 auto; }}
-        .qr-box.active {{ display: block; }}
-        @keyframes fadeIn {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
+        .badge {{ background: var(--main); color: #0f172a; padding: 4px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; }}
+        .btn {{ border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 13px; }}
+        .copy-btn {{ background: #f1f5f9; color: #0f172a; }}
+        .qr-btn {{ background: #38bdf8; color: white; margin-right: 5px; }}
+        .link-text {{ background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 11px; color: #cbd5e1; margin-top: 15px; word-break: break-all; direction: ltr; }}
+        .qr-container {{ display: none; background: white; padding: 15px; margin-top: 15px; border-radius: 12px; text-align: center; }}
+        .qr-container img {{ margin: 0 auto; border: 4px solid white; }}
+        .qr-container.active {{ display: block; }}
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="top-bar">
         <h1>V2Ray Elite Hub 🚀</h1>
-        <div class="stats">
-            <span>📊 متاح حالياً: <b>{count} سيرفر</b></span> | 
-            <span>🕒 تحديث: <b>{now}</b></span>
+        <div class="status">
+            <span>تحديث تلقائي: <b>{update_time}</b></span> | 
+            <span>السيرفرات: <b>{server_count}</b></span>
         </div>
     </div>
-    <div class="container">{cards_html if clean_links else '<p>جاري تحديث البيانات من المصدر...</p>'}</div>
+    <div class="container">
+        {cards_html if clean_links else '<p style="text-align:center; color:#94a3b8;">جاري البحث عن سيرفرات جديدة في القناة...</p>'}
+    </div>
     <script>
-        function copyText(t) {{
-            navigator.clipboard.writeText(t).then(() => alert("تم نسخ الرابط بنجاح ✅"));
+        function copyToClipboard(text) {{
+            navigator.clipboard.writeText(text).then(() => {{
+                alert("تم نسخ السيرفر بنجاح! ✅");
+            }});
         }}
-        function toggleQR(id, link) {{
-            const box = document.getElementById(id);
-            if (!box.innerHTML) {{
-                new QRCode(box, {{ text: link, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" }});
+        function toggleQRCode(id, link) {{
+            const container = document.getElementById(id);
+            if (!container.innerHTML) {{
+                new QRCode(container, {{
+                    text: link,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                }});
             }}
-            box.classList.toggle('active');
+            container.classList.toggle('active');
         }}
     </script>
 </body>
 </html>'''
-        
+
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(full_html)
             
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error during execution: {e}")
 
 if __name__ == "__main__":
     run()

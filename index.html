@@ -1,35 +1,64 @@
+import requests
+import re
 
-    <!DOCTYPE html>
-    <html lang="ar" dir="rtl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>V2Ray Servers - VR</title>
-        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-        <style>
-            body { font-family: 'Tajawal', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-            h1 { color: #38bdf8; margin-bottom: 30px; }
-            .container { width: 100%; max-width: 600px; }
-            .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-            .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-            .link-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70%; font-size: 14px; color: #94a3b8; }
-            button { background: #38bdf8; color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
-            button:active { transform: scale(0.95); }
-            .footer { margin-top: 40px; font-size: 12px; color: #64748b; }
-        </style>
-    </head>
-    <body>
-        <h1>V2Ray Servers 🚀</h1>
-        <div class="container">
-    <p style='text-align:center;'>لا توجد روابط متاحة حالياً.. تأكد من القناة</p>
-        </div>
-        <div class="footer">تحديث تلقائي كل ساعة</div>
-        <script>
-            function copyToClipboard(text) {
-                navigator.clipboard.writeText(text);
-                alert('تم نسخ السيرفر بنجاح!');
-            }
-        </script>
-    </body>
-    </html>
-    
+def get_links():
+    # رابط نسخة الويب للقناة (ضروري للقراءة)
+    url = "https://t.me/s/g33sd"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124 Safari/537.36'}
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        # استخراج الروابط بجميع أنواعها
+        links = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
+        # تنظيف الروابط من أي بقايا كود HTML
+        return list(set([l.split('<')[0].replace('&amp;', '&') for l in links]))
+    except:
+        return []
+
+def create_index(links):
+    # بناء البطاقات (Cards) لكل سيرفر
+    cards_html = ""
+    for link in links:
+        protocol = link.split('://')[0].upper()
+        cards_html += f'''
+        <div class="card">
+            <div class="type">{protocol}</div>
+            <div class="link">{link}</div>
+            <button onclick="copyLink('{link}')">نسخ السيرفر</button>
+        </div>'''
+
+    # هيكل ملف index.html بالكامل
+    full_html = f'''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سيرفرات V2Ray مجانية</title>
+    <style>
+        body {{ font-family: sans-serif; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; }}
+        .container {{ width: 100%; max-width: 600px; }}
+        .card {{ background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }}
+        .type {{ background: #38bdf8; color: #0f172a; display: inline-block; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 12px; margin-bottom: 8px; }}
+        .link {{ font-size: 12px; color: #94a3b8; word-break: break-all; margin-bottom: 10px; direction: ltr; text-align: left; background: #0f172a; padding: 8px; border-radius: 5px; }}
+        button {{ width: 100%; background: #38bdf8; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }}
+        button:active {{ transform: scale(0.98); }}
+    </style>
+</head>
+<body>
+    <h2>🚀 سيرفرات محدثة</h2>
+    <div class="container">
+        {cards_html if links else "<p style='text-align:center;'>جاري جلب السيرفرات... أعد تحديث الصفحة بعد دقيقة</p>"}
+    </div>
+    <script>
+        function copyLink(text) {{
+            navigator.clipboard.writeText(text).then(() => alert("تم النسخ بنجاح ✅"));
+        }}
+    </script>
+</body>
+</html>'''
+
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(full_html)
+
+if __name__ == "__main__":
+    found_links = get_links()
+    create_index(found_links)

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XRAWS | EMERALD IONIC 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Cairo:wght@400;700;900&display=swap');
+        
+        :root { --emerald: #00ff88; --bg: #000a05; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: #fff; overflow: hidden; font-family: 'Cairo', sans-serif; user-select: none; }
+
+        .ionic-overlay { position: fixed; inset: 0; background: radial-gradient(circle at 50% 50%, #001a0d 0%, #000 100%); z-index: -1; }
+
+        .scroll-engine { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        .scroll-engine::-webkit-scrollbar { display: none; }
+        
+        .video-segment { height: 100vh; width: 100vw; scroll-snap-align: start; position: relative; overflow: hidden; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        .watermark {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 900;
+            color: var(--emerald); opacity: 0.05; pointer-events: none; white-space: nowrap; z-index: 10;
+        }
+
+        /* ترويسة مطورة: الاسم يميناً والساعة بجانبه */
+        header { 
+            position: fixed; top: 25px; right: 25px; z-index: 500; 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        .brand-box { 
+            padding: 8px 22px; border-radius: 15px; border: 1px solid var(--emerald); 
+            box-shadow: 0 0 20px rgba(0,255,136,0.3); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+        }
+        .brand-name { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 16px; letter-spacing: 2px; color: var(--emerald); text-shadow: 0 0 10px var(--emerald); }
+        .ionic-clock { 
+            font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--emerald); 
+            background: rgba(0,255,136,0.1); padding: 8px 15px; border-radius: 15px; border: 1px solid rgba(0,255,136,0.2); 
+        }
+
+        /* الأزرار الجانبية مع زر الأدمن فوق الإعجاب */
+        .side-actions { position: absolute; left: 22px; bottom: 130px; display: flex; flex-direction: column; gap: 18px; z-index: 100; }
+        .action-btn { 
+            width: 58px; height: 58px; border-radius: 20px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; transition: 0.3s; 
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: var(--emerald);
+        }
+        .admin-btn { border-color: #ffaa00 !important; color: #ffaa00 !important; box-shadow: 0 0 15px rgba(255,170,0,0.2); }
+
+        .hashtag { position: absolute; bottom: 40px; right: 25px; font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--emerald); background: rgba(0,0,0,0.7); padding: 6px 16px; border-radius: 50px; border: 1px solid var(--emerald); z-index: 50; }
+
+        nav { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
+            width: 88%; max-width: 400px; height: 72px; border-radius: 35px; 
+            background: rgba(0,15,8,0.85); backdrop-filter: blur(25px); border: 1px solid var(--emerald);
+            box-shadow: 0 0 25px -5px var(--emerald);
+            display: flex; justify-content: space-around; align-items: center; z-index: 200; 
+        }
+
+        #chat-overlay { position: fixed; inset: 0; z-index: 600; background: rgba(0,5,2,0.98); display: none; flex-direction: column; padding: 30px; backdrop-filter: blur(15px); }
+        .admin-panel { position: fixed; inset: 0; z-index: 999; background: #000; display: none; flex-direction: column; padding: 40px 20px; }
+        .live-tag { position: absolute; top: 120px; right: 25px; font-size: 9px; color: var(--emerald); font-family: 'Orbitron'; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 10px; border: 1px solid var(--emerald); display: flex; align-items: center; gap: 5px; }
+        .dot { width: 5px; height: 5px; background: var(--emerald); border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+
+    <div class="ionic-overlay"></div>
+
+    <header>
+        <div class="brand-box"><span class="brand-name">XRAWS</span></div>
+        <div class="ionic-clock" id="clock">00:00:00</div>
+    </header>
+
+    <main class="scroll-engine" id="video-stack"></main>
+
+    <nav>
+        <i class="fas fa-microchip text-white/20 text-xl"></i>
+        <div id="upload-trigger" class="w-14 h-14 bg-[#00ff88] text-black rounded-[22px] flex items-center justify-center shadow-[0_0_25px_#00ff88] active:scale-90 transition-transform cursor-pointer">
+            <i class="fas fa-plus text-xl"></i>
+        </div>
+        <i class="fas fa-comment-dots text-[#00ff88] text-2xl cursor-pointer" onclick="toggleChat()"></i>
+    </nav>
+
+    <div id="chat-overlay">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="font-[Orbitron] text-[#00ff88] tracking-widest text-lg">EMERALD_CHAT_HUB</h2>
+            <i class="fas fa-times text-white/50 text-2xl p-2" onclick="toggleChat()"></i>
+        </div>
+        <div id="chat-box" class="flex-1 overflow-y-auto space-y-4 pr-2"></div>
+        <div class="mt-6 flex gap-3 p-2 bg-white/5 rounded-2xl border border-emerald-500/20">
+            <input type="text" id="msg-input" class="bg-transparent flex-1 outline-none px-4 py-3 text-sm" placeholder="Send pulse to XRAWS...">
+            <button onclick="sendMsg()" class="bg-[#00ff88] text-black px-8 rounded-xl font-black text-xs">SEND</button>
+        </div>
+    </div>
+
+    <div id="admin-overlay" class="admin-panel">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="font-[Orbitron] text-[#ffaa00] text-xl">EMERALD_ROOT_ACCESS</h2>
+            <button onclick="toggleAdmin()" class="bg-white/10 px-8 py-2 rounded-full text-xs">EXIT</button>
+        </div>
+        <div id="admin-list" class="space-y-4 overflow-y-auto"></div>
+    </div>
+
+    <script>
+        const ADMIN_PASS = "1234";
+        const AD_LINKS = ["https://www.effectivegatecpm.com/bxwxuk2f39?key=566216691dc8b76a740840e94f68f44c", "https://www.effectivegatecpm.com/k60w64w4gk?key=564f3d8cc4ac85949f218179b742495e"];
+        let currentAd = 0;
+        const USR_ID = "X-ELITE-" + Math.floor(Math.random()*999);
+
+        const firebaseConfig = { databaseURL: "https://soko-7d03e-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function updateClock() {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
+        }
+        setInterval(updateClock, 1000);
+
+        db.ref('xraws_elite').on('value', (snap) => {
+            const container = document.getElementById('video-stack');
+            const adminList = document.getElementById('admin-list');
+            const data = snap.val();
+            container.innerHTML = ''; adminList.innerHTML = '';
+            if(!data) return;
+            
+            Object.keys(data).reverse().forEach((id) => {
+                const vid = data[id];
+                const section = document.createElement('section');
+                section.className = 'video-segment';
+                section.innerHTML = `
+                    <div class="crystal-frame">
+                        <div class="watermark">XRAWS EMERALD</div>
+                        <div class="live-tag"><div class="dot"></div> VIEWERS: ${Math.floor(Math.random()*200)+50}</div>
+                        <video loop playsinline src="${vid.url}" onclick="this.paused?this.play():this.pause()"></video>
+                        <div class="hashtag">#EMERALD_ELITE_2026</div>
+                        <div class="side-actions">
+                            <div class="action-btn admin-btn" onclick="checkAdmin()">
+                                <i class="fas fa-fingerprint"></i>
+                                <span class="text-[8px] mt-1">ROOT</span>
+                            </div>
+                            <div class="action-btn" onclick="triggerAd(); db.ref('xraws_elite/${id}/likes').transaction(l=>(l||0)+1)">
+                                <i class="fas fa-bolt"></i>
+                                <span class="text-[11px] mt-1 font-black">${vid.likes || 0}</span>
+                            </div>
+                            <div class="action-btn" onclick="toggleChat()"><i class="fas fa-terminal"></i></div>
+                            <div class="action-btn" onclick="triggerAd(); navigator.share({url:window.location.href})"><i class="fas fa-share-nodes"></i></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(section);
+
+                adminList.innerHTML += `<div class="flex items-center gap-4 p-5 bg-white/5 rounded-[30px] border border-emerald-500/10">
+                    <video class="w-16 h-16 rounded-2xl object-cover" src="${vid.url}"></video>
+                    <div class="flex-1 text-[10px] font-[Orbitron] opacity-40">${id}</div>
+                    <i class="fas fa-trash-alt text-red-500 p-3 bg-red-500/10 rounded-full" onclick="if(confirm('ERASE VIDEO?')) db.ref('xraws_elite/${id}').remove()"></i>
+                </div>`;
+            });
+            initObserver();
+        });
+
+        function triggerAd() { window.open(AD_LINKS[currentAd], '_blank'); currentAd = (currentAd + 1) % AD_LINKS.length; }
+        function toggleChat() { const c = document.getElementById('chat-overlay'); c.style.display = c.style.display==='flex'?'none':'flex'; }
+        function checkAdmin() { if(prompt("ENTER SECURITY CODE:")===ADMIN_PASS) toggleAdmin(); }
+        function toggleAdmin() { const a = document.getElementById('admin-overlay'); a.style.display = a.style.display==='flex'?'none':'flex'; }
+
+        function sendMsg() {
+            const inp = document.getElementById('msg-input');
+            if(inp.value.trim()){ db.ref('xraws_chat').push({user:USR_ID, text:inp.value}); inp.value=''; }
+        }
+        db.ref('xraws_chat').limitToLast(30).on('value', s => {
+            const box = document.getElementById('chat-box'); box.innerHTML = '';
+            s.forEach(m => {
+                const d = m.val();
+                box.innerHTML += `<div class="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl">
+                    <span class="text-[9px] text-[#00ff88] font-[Orbitron] block mb-1 opacity-60">${d.user}</span>
+                    <p class="text-sm leading-relaxed">${d.text}</p>
+                </div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        });
+
+        const myWidget = cloudinary.createUploadWidget({ 
+            cloudName: "dfscughol", uploadPreset: "update_vk",
+            styles: { palette: { window: "#000a05", sourceBg: "#000a05", windowBorder: "#00ff88", tabIcon: "#00ff88", inactiveTabIcon: "#004422", menuIcons: "#00ff88", link: "#00ff88", action: "#00ff88", inProgress: "#00ff88", complete: "#20ff88", error: "#ff2222", textDark: "#000000", textLight: "#ffffff" } }
+        }, (err, res) => {
+            if (!err && res.event === "success") db.ref('xraws_elite/').push({ url: res.info.secure_url, likes: 0, timestamp: Date.now() });
+        });
+        document.getElementById("upload-trigger").onclick = () => myWidget.open();
+
+        function initObserver() {
+            const obs = new IntersectionObserver((es) => {
+                es.forEach(e => {
+                    const v = e.target.querySelector('video');
+                    if(e.isIntersecting) v.play().catch(()=>{});
+                    else { v.pause(); v.currentTime = 0; }
+                });
+            }, { threshold: 0.8 });
+            document.querySelectorAll('.video-segment').forEach(s => obs.observe(s));
+        }
+        document.addEventListener('touchstart', () => { document.querySelectorAll('video').forEach(v => v.muted = false); }, { once: true });
+    </script>
+</body>
+</html>

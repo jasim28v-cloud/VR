@@ -1,12 +1,10 @@
 import requests
 import re
 
-# إعدادات القناة
 channel_url = "https://t.me/s/g33sd"
 
 def get_links():
     response = requests.get(channel_url)
-    # البحث عن روابط vless, vmess, trojan, ss
     links = re.findall(r'(vless|vmess|trojan|ss)://[^\s<]+', response.text)
     return list(set(links))
 
@@ -25,7 +23,7 @@ def create_html(links):
             .container { width: 100%; max-width: 600px; }
             .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
             .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-            .link-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70%; font-size: 14px; color: #94a3b8; }
+            .link-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70%; font-size: 14px; color: #94a3b8; direction: ltr; text-align: left; }
             button { background: #38bdf8; color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
             button:active { transform: scale(0.95); }
             .footer { margin-top: 40px; font-size: 12px; color: #64748b; }
@@ -37,7 +35,7 @@ def create_html(links):
     """
     
     if not links:
-        html_content += "<p style='text-align:center;'>لا توجد روابط متاحة حالياً.. تأكد من القناة</p>"
+        html_content += "<p style='text-align:center;'>لا توجد روابط متاحة حالياً..</p>"
     else:
         for link in links:
             html_content += f"""

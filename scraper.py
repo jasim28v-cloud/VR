@@ -4,24 +4,20 @@ from datetime import datetime
 
 def run():
     url = "https://t.me/s/kg33d"
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/110.0.0.0 Safari/537.36'}
     
     try:
         response = requests.get(url, headers=headers, timeout=15)
-        response.encoding = 'utf-8'
+        links = re.findall(r'(?:vless|vmess|trojan|ss)://[^\s<"\'\s]+', response.text)
         
-        # البحث عن كافة البروتوكولات المتاحة
-        links = re.findall(r'(?:vless|vmess|trojan|ss|ssr)://[^\s<"\'\s]+', response.text)
-        
-        # تنظيف الروابط ومنع التكرار
         clean_links = []
         for l in links:
             clean = l.replace('&amp;', '&').split('<')[0].split('"')[0].strip()
             if clean not in clean_links:
                 clean_links.append(clean)
         
-        now = datetime.now().strftime("%Y-%m-%d | %I:%M %p")
-        count = len(clean_links)
+        # إضافة وقت التحديث
+        now = datetime.now().strftime("%I:%M %p - %Y/%m/%d")
         
         cards_html = ""
         for i, link in enumerate(clean_links):
@@ -29,14 +25,14 @@ def run():
             cards_html += f'''
             <div class="card">
                 <div class="card-header">
-                    <div class="proto-tag">{proto}</div>
-                    <div class="action-group">
-                        <button class="icon-btn copy" onclick="copyText('{link}')" title="نسخ الرابط">📋</button>
-                        <button class="icon-btn qr" onclick="toggleQR('qr-{i}', '{link}')" title="عرض الباركود">🔳</button>
+                    <span class="badge">{proto}</span>
+                    <div class="btns">
+                        <button class="btn copy-btn" onclick="copyText('{link}')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQR('qr-{i}', '{link}')">باركود 🔳</button>
                     </div>
                 </div>
-                <div class="link-preview">{link}</div>
-                <div id="qr-{i}" class="qr-wrapper"></div>
+                <div class="link-display">{link}</div>
+                <div id="qr-{i}" class="qr-box"></div>
             </div>'''
         
         full_html = f'''<!DOCTYPE html>
@@ -44,178 +40,59 @@ def run():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Elite Hub | {count} سيرفر</title>
+    <title>V2Ray QR Hub</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {{
-            --primary: #00f2fe;
-            --secondary: #4facfe;
-            --bg: #030712;
-            --card-bg: rgba(31, 41, 55, 0.7);
-            --accent: #10b981;
-        }}
-
-        body {{
-            font-family: 'Tajawal', sans-serif;
-            background: radial-gradient(circle at top, #1e293b, var(--bg));
-            color: #f3f4f6;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }}
-
-        .header {{
-            text-align: center;
-            padding: 40px 0;
-            max-width: 600px;
-            margin: 0 auto;
-        }}
-
-        h1 {{
-            font-size: 2.5rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-        }}
-
-        .stats-badge {{
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--primary);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            display: inline-block;
-            margin-top: 15px;
-        }}
-
-        .container {{
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }}
-
-        .card {{
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }}
-
-        .card:hover {{
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-        }}
-
-        .card-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }}
-
-        .proto-tag {{
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #030712;
-            padding: 5px 15px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }}
-
-        .action-group {{ display: flex; gap: 10px; }}
-
-        .icon-btn {{
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }}
-
-        .icon-btn:hover {{ background: var(--primary); color: #000; transform: rotate(5deg); }}
-
-        .link-preview {{
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #9ca3af;
-            word-break: break-all;
-            direction: ltr;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }}
-
-        .qr-wrapper {{
-            display: none;
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 15px;
-            text-align: center;
-            animation: zoomIn 0.3s ease;
-        }}
-
-        .qr-wrapper img {{ margin: 0 auto; }}
-
-        .qr-wrapper.active {{ display: block; }}
-
-        @keyframes zoomIn {{
-            from {{ opacity: 0; transform: scale(0.9); }}
-            to {{ opacity: 1; transform: scale(1); }}
-        }}
-
-        .footer {{ text-align: center; color: #4b5563; font-size: 0.8rem; margin-top: 40px; }}
+        :root {{ --p: #00f2fe; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; }}
+        body {{ font-family: 'Tajawal', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }}
+        h1 {{ text-align: center; color: var(--p); margin-bottom: 5px; }}
+        .update-tag {{ font-size: 11px; color: #94a3b8; margin-bottom: 20px; }}
+        .container {{ width: 100%; max-width: 500px; }}
+        .card {{ background: var(--card); border: 1px solid #334155; border-radius: 12px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }}
+        .card:hover {{ border-color: var(--p); transform: translateY(-2px); }}
+        .card-header {{ display: flex; justify-content: space-between; align-items: center; }}
+        .badge {{ background: var(--p); color: #0f172a; padding: 2px 10px; border-radius: 5px; font-weight: bold; }}
+        .btn {{ border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.2s; }}
+        .copy-btn {{ background: white; color: #0f172a; }}
+        .copy-btn:active {{ background: #cbd5e1; }}
+        .qr-btn {{ background: var(--accent); color: white; margin-right: 5px; }}
+        .link-display {{ background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px; font-size: 10px; color: #94a3b8; margin-top: 10px; word-break: break-all; direction: ltr; }}
+        .qr-box {{ display: none; background: white; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: center; animation: fadeIn 0.3s ease; }}
+        .qr-box img {{ margin: 0 auto; }}
+        .qr-box.active {{ display: block; }}
+        
+        /* قسم التعليمات */
+        .info-section {{ width: 100%; max-width: 500px; background: #161e2d; border-radius: 12px; padding: 15px; margin-top: 10px; border-right: 4px solid var(--p); }}
+        .info-section h3 {{ color: var(--p); margin-top: 0; font-size: 16px; }}
+        .info-section p {{ font-size: 13px; color: #cbd5e1; line-height: 1.6; margin: 5px 0; }}
+        
+        @keyframes fadeIn {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>V2Ray Elite Hub</h1>
-        <div class="stats-badge">
-            🚀 {count} سيرفر متاح | 🕒 {now}
-        </div>
-    </div>
+    <h1>موالد الباركود 🚀</h1>
+    <div class="update-tag">آخر تحديث: {now}</div>
 
     <div class="container">
-        {cards_html if clean_links else '<div class="card" style="text-align:center">جاري تحديث السيرفرات...</div>'}
+        {cards_html if clean_links else '<p>جاري جلب السيرفرات من kg33d...</p>'}
     </div>
 
-    <div class="footer">
-        جيميني المساعد الذكي | 2026
+    <div class="info-section">
+        <h3>📖 تعليمات الاستخدام:</h3>
+        <p>• <b>للنسخ:</b> اضغط "نسخ" ثم استورد السيرفر في تطبيق v2rayNG.</p>
+        <p>• <b>للباركود:</b> اضغط "باركود" وامسح الرمز ضوئياً عبر الكاميرا.</p>
+        <p>• <b>ملاحظة:</b> الموقع يحدّث السيرفرات تلقائياً من القناة.</p>
     </div>
 
     <script>
         function copyText(t) {{
-            navigator.clipboard.writeText(t).then(() => {{
-                alert("تم نسخ السيرفر إلى الحافظة ✅");
-            }});
+            navigator.clipboard.writeText(t).then(() => alert("تم النسخ بنجاح ✅"));
         }}
         function toggleQR(id, link) {{
             const box = document.getElementById(id);
             if (!box.innerHTML) {{
-                new QRCode(box, {{
-                    text: link,
-                    width: 200,
-                    height: 200,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                }});
+                new QRCode(box, {{ text: link, width: 160, height: 160 }});
             }}
             box.classList.toggle('active');
         }}

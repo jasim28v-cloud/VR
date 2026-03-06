@@ -3,81 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Hub - 3 سيرفر متاح</title>
+    <title>V2Ray Elite | 4 سيرفر متاح</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #00f2fe; --bg: #0a0f1d; --card: #161e2d; --text: #f8fafc; }
+        :root { --main: #00f2fe; --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1e293b; padding-bottom: 20px; width: 100%; max-width: 500px; }
-        .stats { font-size: 14px; color: #94a3b8; margin-top: 10px; }
-        .container { width: 100%; max-width: 500px; }
-        .card { background: var(--card); border: 1px solid #2d3748; border-radius: 16px; padding: 18px; margin-bottom: 20px; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .card:hover { border-color: var(--p); transform: translateY(-3px); }
+        .top-bar { width: 100%; max-width: 600px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #334155; padding-bottom: 15px; }
+        h1 { color: var(--main); margin: 0; font-size: 24px; }
+        .status { font-size: 13px; color: #94a3b8; margin-top: 8px; }
+        .container { width: 100%; max-width: 600px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #334155; transition: 0.3s; }
+        .card:hover { transform: translateY(-3px); border-color: var(--main); }
         .card-header { display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #0a0f1d; padding: 4px 14px; border-radius: 10px; font-weight: bold; font-size: 13px; }
-        .btn { border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; transition: 0.2s; }
-        .copy-btn { background: #f8fafc; color: #0f172a; }
-        .qr-btn { background: #38bdf8; color: white; margin-right: 8px; }
-        .link-display { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; font-size: 11px; color: #64748b; margin-top: 15px; word-break: break-all; direction: ltr; border: 1px inset #1e293b; }
-        .qr-box { display: none; background: white; padding: 20px; margin-top: 15px; border-radius: 15px; text-align: center; animation: fadeIn 0.4s ease; }
-        .qr-box img { margin: 0 auto; }
-        .qr-box.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .badge { background: var(--main); color: #0f172a; padding: 4px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; }
+        .btn { border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 13px; }
+        .copy-btn { background: #f1f5f9; color: #0f172a; }
+        .qr-btn { background: #38bdf8; color: white; margin-right: 5px; }
+        .link-text { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 11px; color: #cbd5e1; margin-top: 15px; word-break: break-all; direction: ltr; }
+        .qr-container { display: none; background: white; padding: 15px; margin-top: 15px; border-radius: 12px; text-align: center; }
+        .qr-container img { margin: 0 auto; border: 4px solid white; }
+        .qr-container.active { display: block; }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="top-bar">
         <h1>V2Ray Elite Hub 🚀</h1>
-        <div class="stats">
-            <span>📊 متاح حالياً: <b>3 سيرفر</b></span> | 
-            <span>🕒 تحديث: <b>2026-03-06 20:31</b></span>
+        <div class="status">
+            <span>تحديث تلقائي: <b>2026-03-06 08:40 PM</b></span> | 
+            <span>السيرفرات: <b>4</b></span>
         </div>
     </div>
     <div class="container">
+        
             <div class="card">
                 <div class="card-header">
                     <span class="badge">VMESS</span>
-                    <div class="btns">
-                        <button class="btn copy-btn" onclick="copyText('vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">نسخ الرابط</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-0', 'vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">باركود 🔳</button>
+                    <div class="action-btns">
+                        <button class="btn copy-btn" onclick="copyToClipboard('vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQRCode('qr-0', 'vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9')">باركود</button>
                     </div>
                 </div>
-                <div class="link-display">vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9</div>
-                <div id="qr-0" class="qr-box"></div>
+                <div class="link-text">vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogInNzaG9jZWFuLWFmYWZhZmZmLXdzIiwNCiAgImFkZCI6ICJkZTEueHZtZXNzLm9ubGluZSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJJX0xvdmVf8J+HtfCfh7hfc3NoT2NlYW5fN2I1OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAibm9uZSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiZGUxLnh2bWVzcy5vbmxpbmUiLA0KICAicGF0aCI6ICIvdm1lc3MjRE9OVC1GT1JHRVQtVE8tU1VQUE9SVC1TU0hPQ0VBTi5DT00tVE8tS0VFUC1USElTLVNFUlZFUi1BTElWRSIsDQogICJ0bHMiOiAidGxzIiwNCiAgInNuaSI6ICJkLmZhY2Vib29rLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICIiDQp9</div>
+                <div id="qr-0" class="qr-container"></div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="badge">VMESS</span>
-                    <div class="btns">
-                        <button class="btn copy-btn" onclick="copyText('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ الرابط</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-1', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">باركود 🔳</button>
+                    <div class="action-btns">
+                        <button class="btn copy-btn" onclick="copyToClipboard('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQRCode('qr-1', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">باركود</button>
                     </div>
                 </div>
-                <div class="link-display">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
-                <div id="qr-1" class="qr-box"></div>
+                <div class="link-text">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJkZS12MnJheS5mcmVldm1lc3MuY29tLTQ2cjNpZjBwIiwKICAiYWRkIjogImRlLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiMmFkNzM4MzQtYjAzMy00YWQ3LTkxN2MtNTk2Y2MyZmM4MzY4IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <div id="qr-1" class="qr-container"></div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="badge">VMESS</span>
-                    <div class="btns">
-                        <button class="btn copy-btn" onclick="copyText('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ الرابط</button>
-                        <button class="btn qr-btn" onclick="toggleQR('qr-2', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">باركود 🔳</button>
+                    <div class="action-btns">
+                        <button class="btn copy-btn" onclick="copyToClipboard('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQRCode('qr-2', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">باركود</button>
                     </div>
                 </div>
-                <div class="link-display">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
-                <div id="qr-2" class="qr-box"></div>
-            </div></div>
+                <div class="link-text">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJpdC12MnJheS5mcmVldm1lc3MuY29tLWU4Y2Y2MHpsIiwKICAiYWRkIjogIml0LXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiZDNjM2U2NDItN2RkYi00OTM0LWI1NmEtOTk1MDkyNDlmMjgyIiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <div id="qr-2" class="qr-container"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge">VMESS</span>
+                    <div class="action-btns">
+                        <button class="btn copy-btn" onclick="copyToClipboard('vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">نسخ</button>
+                        <button class="btn qr-btn" onclick="toggleQRCode('qr-3', 'vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=')">باركود</button>
+                    </div>
+                </div>
+                <div class="link-text">vmess://ewogICJ2IjogIjIiLAogICJwcyI6ICJ1ay12MnJheS5mcmVldm1lc3MuY29tLXgxbWkzeWIzIiwKICAiYWRkIjogInVrLXYycmF5LmZyZWV2bWVzcy5jb20iLAogICJwb3J0IjogMjA5NSwKICAiaWQiOiAiNWRjOTlhZjEtOGQ0Mi00Y2UzLTgwNGItZTA3MzRlZGM3MTI3IiwKICAic2N5IjogImF1dG8iLAogICJuZXQiOiAidGNwIiwKICAidGxzIjogIm5vbmUiLAogICJ0eXBlIjogImh0dHAiLAogICJwYXRoIjogIi8iCn0=</div>
+                <div id="qr-3" class="qr-container"></div>
+            </div>
+    </div>
     <script>
-        function copyText(t) {
-            navigator.clipboard.writeText(t).then(() => alert("تم نسخ الرابط بنجاح ✅"));
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("تم نسخ السيرفر بنجاح! ✅");
+            });
         }
-        function toggleQR(id, link) {
-            const box = document.getElementById(id);
-            if (!box.innerHTML) {
-                new QRCode(box, { text: link, width: 180, height: 180, colorDark: "#000000", colorLight: "#ffffff" });
+        function toggleQRCode(id, link) {
+            const container = document.getElementById(id);
+            if (!container.innerHTML) {
+                new QRCode(container, {
+                    text: link,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
             }
-            box.classList.toggle('active');
+            container.classList.toggle('active');
         }
     </script>
 </body>

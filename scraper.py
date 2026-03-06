@@ -2,7 +2,8 @@ import requests
 import re
 
 def run():
-    url = "https://t.me/s/g33sd"
+    # تم تحديث الرابط إلى القناة الجديدة kg33d
+    url = "https://t.me/s/kg33d"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/110.0.0.0 Safari/537.36'}
     
     try:
@@ -60,7 +61,7 @@ def run():
 </head>
 <body>
     <h1>V2Ray QR Generator 🚀</h1>
-    <div class="container">{cards_html if clean_links else '<p style="text-align:center">جاري سحب السيرفرات وتجهيز الباركود...</p>'}</div>
+    <div class="container">{cards_html if clean_links else '<p style="text-align:center">جاري سحب السيرفرات من القناة الجديدة...</p>'}</div>
     <script>
         function copyText(t) {{
             navigator.clipboard.writeText(t).then(() => alert("تم النسخ بنجاح ✅"));
